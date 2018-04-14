@@ -8,6 +8,7 @@ house_height=5;
 wall_thickness=0.4;
 hres=0.4;
 error=0.01;
+$fn=15;
 
 include <bezier.scad>;
 resolution = 50;
@@ -132,6 +133,32 @@ module test()
             translate([0,0,house_height/2]) roof(4,4,man);
             translate([0,20,0]) tower6(4, 8);
             }
+            
+module tonnetak_hus(w, d, h)
+            {
+                difference()
+                {// Protruding roof
+                    rotate([90, 0, 0])cylinder(h=w, d=d,center=true);
+                    translate ([0, 0, 0]) rotate([90, 0, 0])cylinder(h=w+error, d=d-wall_thickness*2,center=true);
+                    translate ([0, 0, -h/2]) cube([d, w, h],center=true);
+                }
+            difference()
+                {
+                hull()
+                    {//House
+                        rotate([90, 0, 0])cylinder(h=w-wall_thickness*2, d=d-wall_thickness*2,center=true);
+                        translate ([0, 0, -h]) cube([d-wall_thickness*2, w-wall_thickness*2, 1],center=true);
+                    } // Make hollow:
+                    hull()
+                    {
+                    rotate([90, 0, 0])cylinder(h=w-wall_thickness*4, d=d-wall_thickness*4,center=true);
+                    translate ([0, 0, -h]) cube([d-wall_thickness*4, w-wall_thickness*4, 1],center=true);
+                    }
+                    // Make door:
+                    translate ([0, w/2, -h]) cube([man/2, man, man],center=true);
+                }//diff
+            } // module
+tonnetak_hus(8, 6, 5);
 // --------------- BELOW HERE BUILD MODULES ---------------- //   
 module house(w, d, h)
            {
@@ -206,12 +233,12 @@ module church_x4()
                  translate([0,-2,0]) rotate([0,0,-90]) house(2,3,4);
                  }
      
-module mosque();
-                 {// Not really finished
+module mosque()
+                 {
                      tower(7, 5, 3);
                      church_tower(3,5,3);
                      translate([2.5, 2.5, 0]) church_tower(2,4,2);
-                     translate([2.5, -2.5, 0]) rotate(0,0,90) church_tower(2,4,2);
+                     translate([2.5, -2.5, 0]) rotate(0,0,180) church_tower(2,4,2);
                      }
 
 module russian_church()
@@ -234,3 +261,4 @@ module russian_church()
 //                 church_x4_2();
 //                 church_x4();
 //                     russian_church();
+//                     mosque();
