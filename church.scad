@@ -21,6 +21,24 @@ module spire(h)
                 [[0.5*h, 0],[0.8*h, 0.5*h],[0, 0.5*h],[0, h]]
         ], resolution);
     }
+   
+   module spire2(h)
+    {
+        rotate_extrude($fn = resolution)
+        BezPolygon([
+                [[0, 0],[0, 0],[0, 0],[0, 0]],
+                [[0.6*h, 0],[0.7*h, 0.5*h],[0, 0.5*h],[0, h]]
+        ], resolution);
+    }
+ 
+   module spire3(h)
+    {
+        rotate_extrude($fn = resolution)
+        BezPolygon([
+                [[0, 0],[0, 0],[0, 0],[0, 0]],
+                [[0.6*h, 0],[0.6*h, 0.4*h],[0, 0.5*h],[0, h]]
+        ], resolution);
+    }
     
 module tower6(w,h)
      // flat topped 6 sided tower with door
@@ -147,18 +165,33 @@ module tonnetak_hus(w, d, h)
                 hull()
                     {//House
                         rotate([90, 0, 0])cylinder(h=w-wall_thickness*2, d=d-wall_thickness*2,center=true);
-                        translate ([0, 0, -h]) cube([d-wall_thickness*2, w-wall_thickness*2, 1],center=true);
+                        translate ([0, 0, -h/2]) cube([d-wall_thickness*2, w-wall_thickness*2, 1],center=true);
                     } // Make hollow:
                     hull()
                     {
                     rotate([90, 0, 0])cylinder(h=w-wall_thickness*4, d=d-wall_thickness*4,center=true);
-                    translate ([0, 0, -h]) cube([d-wall_thickness*4, w-wall_thickness*4, 1],center=true);
+                    translate ([0, 0, -h/2]) cube([d-wall_thickness*4, w-wall_thickness*4, 1],center=true);
                     }
                     // Make door:
-                    translate ([0, w/2, -h]) cube([man/2, man, man],center=true);
+                    translate ([0, w/2, -h/2]) cube([man/2, man, man],center=true);
                 }//diff
             } // module
-tonnetak_hus(8, 6, 5);
+            
+module tonnetak(w, d, h)
+            {
+                roofheight=h;
+                for(x=[0:180])
+                    translate([x*w/180, 0, sin(x)*roofheight])
+                       cube([hres, d, hres]);      
+            }      
+
+            
+module tonnetak_hus(w,d,h)
+            {
+             translate([0,0,h*0.9])tonnetak(w,d,h*0.1);   
+                
+            }
+// tonnetak_hus(4, 6, 5);
 // --------------- BELOW HERE BUILD MODULES ---------------- //   
 module house(w, d, h)
            {
@@ -179,7 +212,23 @@ module church_tower(w,h, s)
                 tower6(w,h);
                 translate([0, 0, h]) spire(s);
              }
-          
+  
+module church_tower2(w,h, s)
+            // 6-sided spire with onion cupola
+            // Arguments: tower width, tower height, cupola height
+            {
+                tower6(w,h);
+                translate([0, 0, h]) spire2(s);
+             }
+    
+module church_tower3(w,h, s)
+            // 6-sided spire with onion cupola
+            // Arguments: tower width, tower height, cupola height
+            {
+                tower6(w,h);
+                translate([0, 0, h]) spire3(s);
+             }
+    
 module square_church_tower(w,h, s)
             // Square tower with onion cupola
             // Arguments: tower width, tower height, cupola height
@@ -262,3 +311,4 @@ module russian_church()
 //                 church_x4();
 //                     russian_church();
 //                     mosque();
+//                     tonnetak_hus(8, 6, 5);
