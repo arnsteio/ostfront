@@ -5,8 +5,8 @@
 
 man=2;
 house_height=5;
-wall_thickness=0.4;
 hres=0.4;
+wall_thickness=hres*2;
 error=0.01;
 $fn=15;
 
@@ -182,7 +182,7 @@ module tonnetak(w, d, h)
                 roofheight=h;
                 for(x=[0:180])
                     translate([x*w/180, 0, sin(x)*roofheight])
-                       cube([hres, d, hres]);      
+                       cube([wall_thickness, d, wall_thickness]);      
             }      
 
             
